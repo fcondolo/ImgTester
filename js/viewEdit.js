@@ -16,7 +16,6 @@ function buildViewImage(_time) {
 	var size = v(parseInt(document.getElementById("size").value, 10));
 	RECT_W = size;
 	RECT_H = size;
-
 	showGrab(_time, zoom);
 }
 
@@ -115,23 +114,33 @@ function showGrab(_time, zoom)  {
 	var ctx = viewContext;
 	ctx.strokeStyle = "rgba(255, 255, 255, 1)";
 	var zoom = v(parseInt(document.getElementById("zoom").value, 10));
+	var xshift = v(parseInt(document.getElementById("xshift").value, 10));
 
 	viewContext.imageSmoothingEnabled = false;
 	let ZX = RECT_X * zoom;
 	let ZY = RECT_Y * zoom;
 	let ZW = RECT_W * zoom;
 	let ZH = RECT_H * zoom;
+	
 	if(document.getElementById("invert").checked) {
-		viewContext.drawImage(workCanvas, RECT_X, RECT_Y, RECT_W, RECT_H, ZX, ZY+200*zoom, ZW, ZH);
+		viewContext.drawImage(workCanvas, RECT_X+xshift, RECT_Y, RECT_W, RECT_H, ZX, ZY+200*zoom, ZW, ZH);
 		ctx.strokeRect(ZX, ZY+200*zoom, ZW, ZH);
 	} else {
-		viewContext.drawImage(workCanvas, RECT_X, RECT_Y+200, RECT_W, RECT_H, ZX, ZY, ZW, ZH);
+		viewContext.drawImage(workCanvas, RECT_X+xshift, RECT_Y+200, RECT_W, RECT_H, ZX, ZY, ZW, ZH);
 		ctx.strokeRect(ZX, ZY, ZW, ZH);
 	}
-	RECT_X += RECT_SPDX;
-	RECT_Y += RECT_SPDY;
+	var spd = parseInt(document.getElementById("speed").value, 10) / 100;
+
+	RECT_X += RECT_SPDX * spd;
+	RECT_Y += RECT_SPDY * spd;
 	if (RECT_X < 0) { RECT_X = 0; RECT_SPDX *= -1;}
 	if (RECT_Y < 0) { RECT_Y = 0; RECT_SPDY *= -1;}
-	if (RECT_X + RECT_W > 319) { RECT_X = 319 - RECT_W; RECT_SPDX *= -1;}
-	if (RECT_Y + RECT_H > 199) { RECT_Y = 199 - RECT_H; RECT_SPDY *= -1;}
+	if (RECT_X + RECT_W > 319){
+		RECT_X = 319 - RECT_W; 
+		RECT_SPDX *= -1.0;
+	}
+	if (RECT_Y + RECT_H > 199){ 
+		RECT_Y = 199 - RECT_H; 
+		RECT_SPDY *= -1.0;
+	}
 } 
